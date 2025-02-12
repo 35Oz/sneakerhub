@@ -13,7 +13,7 @@ export function Shoe3D() {
   const initialCenter = initialBox.getCenter(new THREE.Vector3());
 
   useEffect(() => {
-    // Ajustamos la posición del modelo solo una vez
+    // Solo ajustar la posición del modelo una vez al cargarlo, no cambiar más
     scene.position.sub(initialCenter);
 
     const handleResize = () => {
@@ -21,21 +21,20 @@ export function Shoe3D() {
       let newScale = 12;
 
       if (windowWidth < 640) {
-        newScale = 8;
+        newScale = 6;
       } else if (windowWidth < 1024) {
         newScale = 12;
       } else {
         newScale = 14;
       }
 
-      setScale(newScale); // Actualizamos solo la escala
+      setScale(newScale); // Solo actualizar la escala
     };
 
-    window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [scene, initialCenter]);
 
- 
+  
   useFrame(() => {
     if (group.current) {
       const time = performance.now() * 0.001;
@@ -47,11 +46,12 @@ export function Shoe3D() {
   return (
     <group
       ref={group}
-      scale={scale} // Solo cambiamos la escala
-      rotation={[0, -0.5, Math.PI / -6]} // Rotación fija del modelo
-      position={[0, 0, 0]} // No cambiamos la posición, mantenemos el modelo centrado
+      scale={scale} // Solo cambiar la escala
+      rotation={[0, -0.5, Math.PI / -6]}
+      position={[0, 0, 0]} // No cambiar la posición, mantener centrado
     >
       <primitive object={scene} castShadow receiveShadow />
+
     </group>
   );
 }

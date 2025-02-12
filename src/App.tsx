@@ -97,16 +97,16 @@ function App() {
                     </div>
                   ) : (
                     <Canvas
-                      camera={{ position: [0, 0, 4], fov: 40 }} // Asegúrate de que la cámara esté fija
+                      camera={{ position: [0, 0, 4], fov: 45 }} // Asegúrate de que la cámara esté fija
                       className="absolute inset-0"
                    
                     >
                       <directionalLight 
-                        position={[2, 20, 2]}  // Ajusta la posición de la luz según lo necesites
+                        position={[2, 52, 2]}  // Ajusta la posición de la luz según lo necesites
                         intensity={8}  // Ajusta la intensidad de la luz
                         castShadow  // Habilita la sombra si la deseas
                       />
-                      <ambientLight intensity={0.3} />
+                
                       <Shoe3D />
                       <Environment preset="city" />
                     </Canvas>
