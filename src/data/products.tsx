@@ -1,5 +1,5 @@
 import { Product } from '../types';
-import shoe1 from '../assets/images/Adidas Ultra Boost.webp';
+import shoe1 from '../assets/images/Air Jordan 1 Retro High.webp';
 import shoe2 from '../assets/images/Nike Air Max 90.webp';
 import shoe3 from '../assets/images/Adidas Ultra Boost.webp';
 import shoe4 from '../assets/images/Nike Kobe 6 Protro.webp';
