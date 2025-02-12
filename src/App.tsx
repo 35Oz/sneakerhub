@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import Navbar from './components/Navbar';
 import { Shoe3D } from './components/Shoe3D';
@@ -9,10 +9,11 @@ import { motion } from 'framer-motion';
 import SearchFilters from './components/SearchFilters';
 import ScrollSection from './components/ScrollSection';
 import FeaturedContent from './components/FeaturedContent';
+import { Environment} from '@react-three/drei';
+
 
 // Lazy load components
 const ProductCard = lazy(() => import('./components/ProductCard'));
-
 const ProductDetails = lazy(() => import('./components/ProductDetails'));
 const Checkout = lazy(() => import('./components/Checkout'));
 const Cart = lazy(() => import('./components/Cart'));
@@ -23,6 +24,14 @@ const LoadingFallback = () => (
 );
 
 function App() {
+
+  //States for loading
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [filters, setFilters] = useState<SearchFiltersType>({
     query: '',
     category: 'all',
@@ -66,7 +75,8 @@ function App() {
 
   return (
     <CartProvider>
-      <div className="min-h-screen bg-gray-900">
+      <div className="min-h-screen bg-gray-900"
+      >
         <Navbar 
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}
@@ -78,16 +88,29 @@ function App() {
             {!showSearchResults ? (
               <>
                 {/* Hero Section with 3D Model */}
-                <div className="h-[82vh] lg:h-[90vh] relative mt-10">
-                  <Canvas 
-                    camera={{ position: [0, 0, 4], fov: 50 }}
-                    className="absolute inset-0"
-                  >
-                    <ambientLight intensity={0.8} />
-                    <spotLight position={[10, 10, 10]} angle={0.3} penumbra={1} />
-                    <directionalLight position={[5, 5, 5]} intensity={1} />
-                    <Shoe3D/>
-                  </Canvas>
+                <div className="h-[82vh] lg:h-[90vh] relative mt-10"
+ 
+                 >
+                  {isLoading ? (
+                    <div className="absolute inset-0 flex justify-center mb-72 items-center">
+                      <div className="w-12 h-12 sm:w-20 sm:h-20 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+                    </div>
+                  ) : (
+                    <Canvas
+                      camera={{ position: [0, 0, 4], fov: 40 }} // Asegúrate de que la cámara esté fija
+                      className="absolute inset-0"
+                   
+                    >
+                      <directionalLight 
+                        position={[2, 20, 2]}  // Ajusta la posición de la luz según lo necesites
+                        intensity={8}  // Ajusta la intensidad de la luz
+                        castShadow  // Habilita la sombra si la deseas
+                      />
+                      <ambientLight intensity={0.3} />
+                      <Shoe3D />
+                      <Environment preset="city" />
+                    </Canvas>
+                  )}
 
                   <div className="w-[40vh] md:w-[70vh] lg:w-[100vh] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-26 bg-gray-800/60 py-4 rounded-xl backdrop-blur-md shadow-xl">
                     <h1 className="text-[20px] sm:text-[45px] md:text-[60px] lg:text-[70px] font-extrabold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-lg">
@@ -97,7 +120,6 @@ function App() {
                       Descubre tu par perfecto
                     </p>
                   </div>
-
                 </div>
 
                 {/* Horizontal Scroll Section */}
@@ -124,7 +146,7 @@ function App() {
                   />
                 </ScrollSection>
 
-               {/* Products Grid/Carousel for Home */}
+                {/* Products Grid/Carousel for Home */}
                 <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
                   <Suspense fallback={<LoadingFallback />}>
                     {/* Desktop/mobile Grid */}
@@ -149,55 +171,53 @@ function App() {
                     </div>
                   )}
                 </div>
-
               </>
             ) : (
               // Search Results with Filters
               <div className="container mx-auto px-4 py-8 mt-16">
-              <div className="flex flex-col lg:flex-row gap-24">
-                {/* Filters Sidebar */}
-                <div className="lg:w-1/4">
-                  <div className="sticky top-24">
-                    <SearchFilters
-                      selectedStyle={filters.style}
-                      selectedCategory={filters.category}
-                      onStyleChange={(style) => handleFilterChange(filters.category, style)}
-                      onCategoryChange={(category) => handleFilterChange(category, filters.style)}
-                    />
+                <div className="flex flex-col lg:flex-row gap-24">
+                  {/* Filters Sidebar */}
+                  <div className="lg:w-1/4">
+                    <div className="sticky top-24">
+                      <SearchFilters
+                        selectedStyle={filters.style}
+                        selectedCategory={filters.category}
+                        onStyleChange={(style) => handleFilterChange(filters.category, style)}
+                        onCategoryChange={(category) => handleFilterChange(category, filters.style)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Products Grid */}
+                  <div className="lg:w-3/4">
+                    <h2 className="text-2xl font-bold text-white mb-6">
+                      Resultados ({filteredProducts.length})
+                    </h2>
+
+                    <Suspense fallback={<LoadingFallback />}>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                        {filteredProducts.map((product, index) => (
+                          <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2, delay: Math.min(index * 0.1, 0.3) }}
+                            viewport={{ once: true, amount: 0.1 }}
+                          >
+                            <ProductCard product={product} />
+                          </motion.div>
+                        ))}
+                      </div>
+                    </Suspense>
+
+                    {filteredProducts.length === 0 && (
+                      <div className="text-center py-12">
+                        <p className="text-gray-400 text-lg">No se encuentran productos relacionados.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                {/* Products Grid */}
-                <div className="lg:w-3/4">
-                  <h2 className="text-2xl font-bold text-white mb-6">
-                    Resultados ({filteredProducts.length})
-                  </h2>
-
-                  <Suspense fallback={<LoadingFallback />}>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                      {filteredProducts.map((product, index) => (
-                        <motion.div
-                          key={product.id}
-                          initial={{ opacity: 0, y: 50 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.2, delay: Math.min(index * 0.1, 0.3) }}
-                          viewport={{ once: true, amount: 0.1 }}
-                        >
-                          <ProductCard product={product} />
-                        </motion.div>
-                      ))}
-                    </div>
-                  </Suspense>
-
-                  {filteredProducts.length === 0 && (
-                    <div className="text-center py-12">
-                      <p className="text-gray-400 text-lg">No se encuentran productos relacionados.</p>
-                    </div>
-                  )}
-                </div>
               </div>
-            </div>
-
             )}
           </>
         )}
