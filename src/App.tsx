@@ -73,6 +73,9 @@ function App() {
     });
   }, [filters]);
 
+  const [fov] = useState(50); // Valor por defecto del fov
+
+  
   return (
     <CartProvider>
       <div className="min-h-screen bg-gray-900"
@@ -97,7 +100,7 @@ function App() {
                     </div>
                   ) : (
                     <Canvas
-                      camera={{ position: [0, 0, 4], fov: 45 }} // Asegúrate de que la cámara esté fija
+                      camera={{ position: [0, 0, 4], fov}} // Asegúrate de que la cámara esté fija
                       className="absolute inset-0"
                    
                     >
@@ -112,8 +115,8 @@ function App() {
                     </Canvas>
                   )}
 
-                  <div className="w-[40vh] md:w-[70vh] lg:w-[100vh] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-26 bg-gray-800/60 py-4 rounded-xl backdrop-blur-md shadow-xl">
-                    <h1 className="text-[20px] sm:text-[45px] md:text-[60px] lg:text-[70px] font-extrabold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-lg">
+                  <div className="w-[40vh] md:w-[94vh] lg:w-[120vh] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-26 bg-gray-800/60 py-4 rounded-xl backdrop-blur-md shadow-xl">
+                    <h1 className="text-[20px] sm:text-[45px] md:text-[55px] lg:text-[70px] font-extrabold bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-lg">
                       Bienvenido a SneakerHub
                     </h1>
                     <p className="text-[16px] sm:text-[20px] md:text-[25px] lg:text-[30px] text-gray-200">

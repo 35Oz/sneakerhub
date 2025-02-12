@@ -27,19 +27,20 @@ const Navbar: React.FC<NavbarProps> = ({ onSearch, onFilterChange, onCartClick }
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
-            <div className="flex items-center ml-2">
+            <div className="flex items-center ml-2"
+            onClick={() => window.location.href = '/'}>
               <img 
                 src={logo}
                 alt="Logo SneakerHub" 
                 className="w-12 h-12 sm:w-20 sm:h-20 mr-2" 
               />
+            </div>
               <button 
                 className="hidden md:block text-2xl font-bold text-white" 
                 onClick={() => window.location.href = '/'}
               >
                 SneakerHub
               </button>
-            </div>
 
           </div>
         

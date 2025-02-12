@@ -6,7 +6,7 @@ import { useFrame } from '@react-three/fiber';
 export function Shoe3D() {
   const group = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/shoe.glb');
-  const [scale, setScale] = useState(10);
+  const [scale, setScale] = useState(9);
 
   // Calcular el centro inicial solo una vez
   const initialBox = new THREE.Box3().setFromObject(scene);
@@ -18,7 +18,7 @@ export function Shoe3D() {
 
     const handleResize = () => {
       const windowWidth = window.innerWidth;
-      let newScale = 12;
+      let newScale = 9;
 
       if (windowWidth < 640) {
         newScale = 6;
